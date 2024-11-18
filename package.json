@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
+    "caniuse-lite": "^1.0.30001680",
     "chart.js": "^3.9.1",
     "firebase": "^9.15.0",
     "react": "^18.2.0",
