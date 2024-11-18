@@ -12,9 +12,6 @@ import { makeStyles } from "@mui/styles";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { CryptoState } from "../CryptoContext";
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { useDispatch } from "react-redux";
-import { fetchAllCoins } from "../store/coinStore";
 import RefreshButton from "./Banner/RefreshBtn";
 
 const useStyles = makeStyles(() => ({
