@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { HistoricalChart } from '../config/api';
 import { CryptoState } from "../CryptoContext";
 import { CircularProgress, createTheme, makeStyles, ThemeProvider } from "@material-ui/core";
@@ -7,6 +7,7 @@ import { Line } from "react-chartjs-2";
 import Chart from 'chart.js/auto';
 import { chartDays } from '../config/data';
 import SelectButton from "./SelectButton";
+import sleep from '../common';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -30,18 +31,26 @@ const useStyles = makeStyles((theme) => ({
 const CoinInfo = ({ coin }) => {
   const [ historicData, setHistoricData ] = useState();
   const [ days, setDays ] = useState(1);
+  let counter = 1
 
   const { currency } = CryptoState();
 
-  const fetchHistoricData = async () => {
-    const { data } = await axios.get(HistoricalChart(coin.id, days, currency))
+  const fetchHistoricData = useCallback(async () => {
+    try {
+      const { data } = await axios.get(HistoricalChart(coin.id, days, currency))
+      setHistoricData(data.prices);
 
-    setHistoricData(data.prices);
-  };
+    } catch (err) {
+      console.log("retrying to fetch in", (counter * 3), "seconds")
+      await sleep(counter * 3000)
+      counter++
+      fetchHistoricData()
+    }
+  }, [coin.id, counter, currency, days]);
 
   useEffect(() => {
     fetchHistoricData();
-  }, [ currency, days ])
+  }, [currency, days, fetchHistoricData])
 
   const darkTheme = createTheme({
     palette: {
@@ -59,13 +68,13 @@ const CoinInfo = ({ coin }) => {
       <div className={classes.container}>
         {!historicData ? (
           <CircularProgress
-            style={{ color: "gold" }}
+            style={{ color: "rgb(8, 0, 255)" }}
             size={250}
             thickness={1}
           />) : (<>
             <Line
               data={{
-                labels: historicData.map(coin => {
+                labels: historicData?.map(coin => {
                   let date = new Date(coin[ 0 ]);
                   let time =
                     date.getHours() > 12
@@ -76,9 +85,9 @@ const CoinInfo = ({ coin }) => {
                 }),
 
                 datasets: [ {
-                  data: historicData.map((coin) => coin[ 1 ]),
+                  data: historicData?.map((coin) => coin[ 1 ]),
                   label: `Price (Past ${days} Days) in ${currency}`,
-                  borderColor: "#EEBC1d"
+                  borderColor: "rgb(8, 0, 255)"
                 },
                 ],
               }}
