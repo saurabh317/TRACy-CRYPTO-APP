@@ -44,7 +44,6 @@ const CoinsTable = () => {
   const [page, setPage] = useState(1);
   const dispatch = useDispatch()
   const coins = useSelector(({ coins }) => coins.coin)
-  console.log(coins, search)
 
   const { currency, symbol } = CryptoState();
 

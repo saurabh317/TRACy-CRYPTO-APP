@@ -81,7 +81,6 @@ const CoinPage = () => {
     }
   }, [counter, id]);
 
-  console.log(coin);
 
   useEffect(() => {
     fetchCoin();
