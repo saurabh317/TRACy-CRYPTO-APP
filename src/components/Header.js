@@ -52,7 +52,6 @@ const Header = () => {
               variant="h5">
               TRACy
             </Typography>
-
             <RefreshButton/>
 
             <Select

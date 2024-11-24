@@ -8,6 +8,7 @@ import CoinInfo from "../components/CoinInfo";
 import ReactHtmlParser from "react-html-parser";
 import { numberWithCommas } from "../components/Banner/Carousel";
 import sleep from "../common";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   container: {

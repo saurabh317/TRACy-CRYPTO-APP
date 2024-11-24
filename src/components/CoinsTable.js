@@ -20,6 +20,7 @@ import { numberWithCommas } from "./Banner/Carousel";
 import { Pagination } from "@material-ui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCoins } from "../store/coinStore";
+import WithSort from "./Banner/WithSort";
 
 const useStyles = makeStyles(() => ({
   row: {
@@ -41,9 +42,12 @@ const useStyles = makeStyles(() => ({
 const CoinsTable = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [sortByPriceOrder, setSortByPriceOrder] = useState("")
+  const [sortByMarketCap, setSortByMarketCap] = useState('increasing')
   const [page, setPage] = useState(1);
   const dispatch = useDispatch()
   const coins = useSelector(({ coins }) => coins.coin)
+  const [sortedCoins, setSortedCoins] = useState(coins)
 
   const { currency, symbol } = CryptoState();
 
@@ -51,11 +55,13 @@ const CoinsTable = () => {
     if (coins.length > 0) return
     setLoading(true);
     dispatch(fetchAllCoins({ currency, setLoading }))
-  }, [coins.length, currency, dispatch])
+    setSortedCoins(coins)
+  }, [coins, currency, dispatch])
 
   useEffect(() => {
     fetchCoins()
-  }, [fetchCoins])
+    setSortedCoins(coins)
+  }, [coins, fetchCoins])
 
   const darkTheme = createTheme({
     palette: {
@@ -66,11 +72,15 @@ const CoinsTable = () => {
     },
   });
 
+
   const handleSearch = () => {
-    return coins?.filter(
-      (coin) =>
-        coin.name.toLowerCase().includes(search) ||
-        coin.symbol.toLowerCase().includes(search)
+    console.log(sortedCoins)
+    return sortedCoins?.filter(
+      (coin) => {
+        return (coin.name.toLowerCase().includes(search) ||
+        coin.symbol.toLowerCase().includes(search))
+
+      }
     );
   };
 
@@ -98,17 +108,11 @@ const CoinsTable = () => {
             <Table>
               <TableHead style={{ backgroundColor: "rgb(8, 0, 255)" }}>
                 <TableRow>
-                  {["Coin", "Price", "24h Change", "Market Cap"].map((head) => (
-                    <TableCell
-                      style={{
-                        color: "black",
-                        fontWeight: "700",
-                        fontFamily: "Montserrat",
-                      }}
-                      key={head}
-                      align={head === "Coin" ? "" : "right"}>
-                      {head}
-                    </TableCell>
+                  {["Coin", "Price", "24h Change", "Market Cap"].map((head, i) => (
+                    <WithSort
+                      head={head}
+                      setSortedCoins={setSortedCoins}
+                    />
                   ))}
                 </TableRow>
               </TableHead>

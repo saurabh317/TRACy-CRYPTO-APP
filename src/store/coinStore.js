@@ -21,7 +21,12 @@ export const fetchAllCoins = createAsyncThunk('fetchAllCoins', async(payload, { 
 })
 
 const initialState = {
-  coin: []
+  coin: [],
+  darkMode: true,
+  filters: {
+    sortBy: 'default',
+    sortOrder: 'dafault'
+  }
 }
 
 const coinSlice = createSlice({
@@ -30,6 +35,14 @@ const coinSlice = createSlice({
   reducers: {
     setFetchedCoins(state, action) {
       state.coin = action.payload
+    },
+    setDarkModeStatus(state, action) {
+      state.darkMode = action.payload
+    },
+    setSortingFilters(state, action) {
+      const { sortBy, sortOrder } = action.payload
+      state.filters.sortBy = sortBy
+      state.filters.sortOrder = sortOrder
     }
   },
 
@@ -45,5 +58,5 @@ const coinSlice = createSlice({
   }
 })
 
-export const { setFetchedCoins } = coinSlice.actions;
+export const { setFetchedCoins, setDarkModeStatus, setSortingFilters } = coinSlice.actions;
 export default coinSlice.reducer;
